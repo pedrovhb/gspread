@@ -37,6 +37,7 @@ except NameError:
 
 class Spreadsheet(object):
     """The class that represents a spreadsheet."""
+
     def __init__(self, client, properties):
         self.client = client
         self._properties = properties
@@ -77,7 +78,7 @@ class Spreadsheet(object):
 
     def __iter__(self):
         for sheet in self.worksheets():
-            yield(sheet)
+            yield (sheet)
 
     def __repr__(self):
         return '<%s %s id:%s>' % (self.__class__.__name__,
@@ -278,11 +279,11 @@ class Spreadsheet(object):
         return worksheet
 
     def duplicate_sheet(
-        self,
-        source_sheet_id,
-        insert_sheet_index=None,
-        new_sheet_id=None,
-        new_sheet_name=None
+            self,
+            source_sheet_id,
+            insert_sheet_index=None,
+            new_sheet_id=None,
+            new_sheet_name=None
     ):
         """Duplicates the contents of a sheet.
 
@@ -525,9 +526,10 @@ class Worksheet(object):
         return Cell(row, col, value)
 
     @cast_to_a1_notation
-    def range(self, name):
+    def range(self, name, value_render_option='FORMATTED_VALUE'):
         """Returns a list of :class:`Cell` objects from a specified range.
 
+        :param value_render_option: The value render option passed to the API.
         :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
         :type name: str
 
@@ -557,7 +559,8 @@ class Worksheet(object):
 
         range_label = '%s!%s' % (self.title, name)
 
-        data = self.spreadsheet.values_get(range_label)
+        data = self.spreadsheet.values_get(range_label,
+                                           params={'valueRenderOption': value_render_option})
 
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)
@@ -593,11 +596,11 @@ class Worksheet(object):
             return []
 
     def get_all_records(
-        self,
-        empty2zero=False,
-        head=1,
-        default_blank="",
-        allow_underscores_in_numeric_literals=False,
+            self,
+            empty2zero=False,
+            head=1,
+            default_blank="",
+            allow_underscores_in_numeric_literals=False,
     ):
         """Returns a list of dictionaries, all of them having the contents
             of the spreadsheet with the head row as keys and each of these
@@ -893,10 +896,10 @@ class Worksheet(object):
         return self.spreadsheet.values_append(self.title, params, body)
 
     def insert_row(
-        self,
-        values,
-        index=1,
-        value_input_option='RAW'
+            self,
+            values,
+            index=1,
+            value_input_option='RAW'
     ):
         """Adds a row to the worksheet at the specified index
         and populates it with values.
@@ -919,10 +922,10 @@ class Worksheet(object):
             "requests": [{
                 "insertDimension": {
                     "range": {
-                      "sheetId": self.id,
-                      "dimension": "ROWS",
-                      "startIndex": index - 1,
-                      "endIndex": index
+                        "sheetId": self.id,
+                        "dimension": "ROWS",
+                        "startIndex": index - 1,
+                        "endIndex": index
                     }
                 }
             }]
@@ -954,10 +957,10 @@ class Worksheet(object):
             "requests": [{
                 "deleteDimension": {
                     "range": {
-                      "sheetId": self.id,
-                      "dimension": "ROWS",
-                      "startIndex": index - 1,
-                      "endIndex": index
+                        "sheetId": self.id,
+                        "dimension": "ROWS",
+                        "startIndex": index - 1,
+                        "endIndex": index
                     }
                 }
             }]
@@ -1026,10 +1029,10 @@ class Worksheet(object):
         )
 
     def duplicate(
-        self,
-        insert_sheet_index=None,
-        new_sheet_id=None,
-        new_sheet_name=None
+            self,
+            insert_sheet_index=None,
+            new_sheet_id=None,
+            new_sheet_name=None
     ):
         """Duplicate the sheet.
 
